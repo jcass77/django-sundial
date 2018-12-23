@@ -16,19 +16,17 @@ class TimezoneField(models.CharField):
         kwargs.setdefault('max_length', self.default_max_length)
         super(TimezoneField, self).__init__(*args, **kwargs)
 
-    # 'context' argument was deprecated in Django 2.0
-    # See: https://docs.djangoproject.com/en/2.0/releases/2.0/#features-deprecated-in-2-0
-    if django.VERSION < (2,):
-        # TODO: remove when Django<2 support is dropped.
-        def from_db_value(self, value, expression, connection, context):
-            if value:
-                value = coerce_timezone(value)
-            return value
-    else:
+    if django.VERSION >= (2, 0):
         def from_db_value(self, value, expression, connection):
             if value:
                 value = coerce_timezone(value)
             return value
+    else:
+        def from_db_value(self, value, expression, connection, context):
+            if value:
+                value = coerce_timezone(value)
+            return value
+        
 
     def to_python(self, value):
         value = super(TimezoneField, self).to_python(value)
