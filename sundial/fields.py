@@ -26,7 +26,6 @@ class TimezoneField(models.CharField):
             if value:
                 value = coerce_timezone(value)
             return value
-        
 
     def to_python(self, value):
         value = super(TimezoneField, self).to_python(value)
